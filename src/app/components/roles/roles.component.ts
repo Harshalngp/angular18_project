@@ -1,32 +1,36 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { IRole } from '../../model/interface/role';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-roles',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './roles.component.html',
   styleUrl: './roles.component.css'
 })
 
-export class RolesComponent {
-  // data type: string, number, boolean, date, object, array, null, undefined
+export class RolesComponent implements OnInit {
 
-  firstName: string = "Angular Tutorial";
-  angularVersion = "Version 18"
+  roleList: IRole [] = [];
 
-  version: number = 18;
-  isActive: boolean = false;
-  currentDate: Date = new Date();
-  inputType: string = "checkbox";
-  selectedState: string = "";
+  // new way
+  http = inject(HttpClient);
 
-  
-  showWelcomeAlert() {
-    alert("Welcome to Angular 18 Tutorial");
+  // Old way with dependency injection
+  // constructor(private http: HttpClient) {
+
+  // }    
+
+  ngOnInit(): void {
+    this.getAllRoles();
   }
 
-  showMessage(message: string) {
-    alert(message);
+  getAllRoles() {
+    this.http.get("https://freeapi.miniprojectideas.com/api/ClientStrive/GetAllRoles").subscribe((res:any)=>{     // using subscribe to catch the data
+      this.roleList = res.data;
+    })
   }
 }
